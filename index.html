@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+    <script type="text/javascript">
+        var socket = io('http://localhost:8001');
+
+        window.alfa = 0;
+        function angle(u, v) {
+            var u1v1 = u.x * v.x;
+            var u2v2 = u.y * v.y;
+            var us2 = Math.sqrt(Math.pow(u.x, 2) + Math.pow(u.y, 2));
+            var vs2 = Math.sqrt(Math.pow(v.x, 2) + Math.pow(v.y, 2));
+            return Math.acos((u1v1 + u2v2) / (us2 * vs2)) * 180 / Math.PI;
+        }
+        socket.on('connect', function () {
+	    	console.log('connected');
+            document.onmousemove = function(e) {
+                var a = angle({
+                    'x': 10,
+                    'y': 0
+                }, {
+                    'x': e.clientX,
+                    'y': e.clientY
+                });
+                if (window.alfa != a){
+                    socket.emit("angle", Math.round(a));
+                }
+            };
+        });
+    </script>
+</head>
+
+<body>
+    <h1>Hola iot</h1>
+    <p>Mueva el mouse para mover el servo </p>
+</body>
+
+</html>
